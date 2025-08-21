@@ -1,11 +1,18 @@
 function App() {
+  const [isFirstSet, setIsFirstSet] = useState(true);
+
   return (
     <div className="flex min-h-svh items-center justify-center">
       <div className="m-4">
         <ChartBarStacked />
       </div>
+      <div className="flex flex-col items-center space-y-4 m-4">
+        <Button onClick={() => setIsFirstSet((prev) => !prev)}>
+          Change Users
+        </Button>
+      </div>
       <div className="m-4">
-        <UsersList />
+        <UsersList isFirstSet={isFirstSet} />
       </div>
     </div>
   );
@@ -15,15 +22,19 @@ export default App;
 
 import { useQuery } from "@tanstack/react-query";
 
-async function fetchUsers() {
-  const res = await fetch("http://localhost:3000/api/v1/users");
+async function fetchUsers(isFirstSet = true) {
+  const endpoint = isFirstSet ? "/users" : "/users_1";
+  const res = await fetch(`http://localhost:3000/api/v1${endpoint}`);
   return res.json();
 }
 
-export function UsersList() {
+export function UsersList(props: { isFirstSet: boolean }) {
   const { data, isLoading } = useQuery({
-    queryKey: ["users"],
-    queryFn: fetchUsers,
+    queryKey: ["users", props.isFirstSet],
+    queryFn: () => fetchUsers(props.isFirstSet),
+    refetchOnWindowFocus: false,
+    refetchOnMount: false,
+    refetchOnReconnect: false,
   });
 
   if (isLoading)
@@ -41,7 +52,12 @@ export function UsersList() {
     <div>
       <h2 className="text-xl font-bold">Users</h2>
       <ul className="mt-2">
-        {data.users.map((u: any) => (
+        <h3 className="text-lg font-semibold">Manager</h3>
+        {data.manager.map((u: any) => (
+          <li key={u.id}>{u.name}</li>
+        ))}
+        <h3 className="text-lg font-semibold">Store Keepers</h3>
+        {data.storekeepers.map((u: any) => (
           <li key={u.id}>{u.name}</li>
         ))}
       </ul>
@@ -69,6 +85,8 @@ import {
   ChartTooltipContent,
 } from "@/components/ui/chart";
 import { Skeleton } from "./components/ui/skeleton";
+import { Button } from "./components/ui/button";
+import { useState } from "react";
 
 export const description = "A stacked bar chart with a legend";
 
