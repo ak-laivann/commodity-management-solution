@@ -1,22 +1,8 @@
 import { faker } from "@faker-js/faker";
-import type { Registry } from "miragejs";
+import { Response, type Registry } from "miragejs";
 import type { RouteHandler } from "miragejs/server";
 import type { ModelRegistry } from "./MirageModels";
-
-// this should be passed to props so that we can avoid circular dependency issues.
-export interface User {
-  id: string;
-  name: string;
-  email: string;
-  role: UserRole;
-  managerId?: string; // Optional property to link to a manager
-  isSignedIn?: boolean; // Optional property to indicate if the user is signed in
-}
-
-export enum UserRole {
-  StoreKeeper = "storekeeper",
-  Manager = "manager",
-}
+import { UserRole, type User } from "@/components/props";
 
 const managerId = faker.database.mongodbObjectId();
 const managerId_1 = faker.database.mongodbObjectId();
@@ -34,13 +20,14 @@ export function getStoreKeeper(isFirstSet: boolean): User {
   };
 }
 
-export function getManager(isFirstSet: boolean): User {
+export function getManager(isFirstSet: boolean, email?: string): User {
   return {
     id: isFirstSet ? managerId : managerId_1,
     name: faker.person.fullName(),
-    email: faker.internet.email(),
+    email: email ?? faker.internet.email(),
     role: UserRole.Manager,
     isSignedIn: true,
+    managerId: "YouAreTheManager",
   };
 }
 
@@ -71,4 +58,34 @@ export const mockGetSecondSetOfUsers: RouteHandler<
       (user) => user.attrs.role === UserRole.StoreKeeper
     ),
   };
+};
+
+export const mockAuthLogin: RouteHandler<
+  Registry<typeof ModelRegistry, any>
+> = (schema, request) => {
+  const signinMethod = request.queryParams.signinMethod || "signup";
+
+  if (signinMethod === "signup" || signinMethod === "login") {
+    const { email, password } = JSON.parse(request.requestBody);
+
+    if (password !== "1000") {
+      return new Response(401, {}, { error: "Invalid credentials" });
+    }
+
+    const manager = getManager(true, email);
+    return {
+      ...manager,
+      token: "mock-jwt-token",
+    };
+  }
+
+  if (signinMethod === "google" || signinMethod === "facebook") {
+    const manager = getManager(true);
+    return {
+      ...manager,
+      token: "mock-jwt-token",
+    };
+  }
+
+  return new Response(400, {}, { error: "Unknown signin method" });
 };

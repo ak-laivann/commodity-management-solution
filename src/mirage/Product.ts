@@ -5,6 +5,8 @@ export interface Product {
   productDescription: string;
   tags: string[];
   pricing: Product_Pricing;
+  managerId?: string;
+  storeOwnerIds?: string[];
 }
 
 // additionally, we can add currency. but

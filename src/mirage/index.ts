@@ -2,9 +2,9 @@ import { createServer } from "miragejs";
 import {
   getManager,
   getStoreKeeper,
+  mockAuthLogin,
   mockGetFirstSetOfUsers,
   mockGetSecondSetOfUsers,
-  type User,
 } from "./Users";
 import { ModelRegistry } from "./MirageModels";
 
@@ -12,10 +12,12 @@ export function makeServer() {
   return createServer({
     models: ModelRegistry,
     routes() {
-      this.urlPrefix = `http://localhost:3000/api/v1`;
+      this.urlPrefix = `/api/v1`;
       this.timing = 3000;
       this.get("/users", mockGetFirstSetOfUsers);
       this.get("/users_1", mockGetSecondSetOfUsers);
+
+      this.post("/auth/login", mockAuthLogin);
 
       // this guy is useful in case we want to move to real api.
       // just set use mirage to false or remove it in the api call
@@ -24,9 +26,9 @@ export function makeServer() {
       this.passthrough(
         (request) =>
           !(
-            request.queryParams?.useMirage ??
-            request.requestHeaders?.useMirage ??
-            true
+            request.queryParams?.useMirage === "true" ||
+            request.requestHeaders?.useMirage === "true" ||
+            false
           )
       );
     },
