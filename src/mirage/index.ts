@@ -27,8 +27,7 @@ export function makeServer() {
         (request) =>
           !(
             request.queryParams?.useMirage === "true" ||
-            request.requestHeaders?.useMirage === "true" ||
-            false
+            request.requestHeaders?.useMirage === "true"
           )
       );
     },

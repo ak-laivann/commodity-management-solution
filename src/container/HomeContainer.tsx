@@ -20,8 +20,10 @@ import {
   User as UserIcon,
   ChevronDown,
   ChevronUp,
+  LayoutDashboard,
 } from "lucide-react";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import { Header } from "@/components/custom";
 
 export const HomeContainer = () => {
   const { isSignedIn, email, id, name, role, managerId } =
@@ -36,7 +38,7 @@ export const HomeContainer = () => {
 
   return (
     <SidebarProvider>
-      <div className="flex h-screen">
+      <div className="flex h-screen w-screen">
         <Sidebar
           side="left"
           collapsible="icon"
@@ -60,7 +62,7 @@ export const HomeContainer = () => {
                 >
                   <Link to="/dashboard" className="flex w-full items-center">
                     <span className="flex items-center">
-                      <Home className="mr-2" />
+                      <LayoutDashboard className="mr-2" />
                       Dashboard
                     </span>
                     <ChevronDown className="ml-auto opacity-50" size={16} />
@@ -103,22 +105,10 @@ export const HomeContainer = () => {
           </SidebarContent>
         </Sidebar>
 
-        <div className="flex flex-col overflow-hidden">
-          <header className="sticky top-0 z-10 border-b border-gray-200 px-4 py-2">
-            Header
-          </header>
+        <div className="flex flex-col flex-1 overflow-hidden">
+          <Header />
 
-          <main className="overflow-auto p-6">
-            <div className="mb-4">
-              <ul className="space-y-1">
-                <li>name: {name}</li>
-                <li>email: {email}</li>
-                <li>id: {id}</li>
-                <li>role: {role}</li>
-                <li>managerId: {managerId}</li>
-              </ul>
-            </div>
-
+          <main className="flex-1 overflow-auto p-6">
             <RootRouter />
           </main>
         </div>

@@ -1,10 +1,8 @@
 import { useState, useContext } from "react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { useMutateData } from "@/hooks/useMutation";
-import { UserContext } from "../context/UserContext";
 import { useNavigate } from "react-router-dom";
-import { UserRole, type User } from "@/components/props";
+import { useUserLogin } from "@/hooks";
 
 export const LoginPage = () => {
   const [email, setEmail] = useState("");
@@ -14,35 +12,20 @@ export const LoginPage = () => {
     "signup" | "login" | "google" | "facebook"
   >("signup");
 
-  const { setUser } = useContext(UserContext);
   const navigate = useNavigate();
-
-  const mutation = useMutateData<User, {}>(
-    `/api/v1/auth/login?signinMethod=${signinMethod}`,
-    {
-      onSuccess: (data) => {
-        setUser?.({
-          id: data.id,
-          name: data.name,
-          email: data.email,
-          role: UserRole.Manager,
-          isSignedIn: true,
-          managerId: data.managerId,
-        });
-        navigate("/dashboard");
-      },
-    }
+  const loginMutation = useUserLogin(signinMethod, () =>
+    navigate("/dashboard")
   );
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     setSigninMethod(isLogin ? "login" : "signup");
-    mutation.mutate({ email, password });
+    loginMutation.mutate({ email, password });
   };
 
   const handleSocialSignIn = (method: "google" | "facebook") => {
     setSigninMethod(method);
-    mutation.mutate({});
+    loginMutation.mutate({});
   };
 
   return (
@@ -69,9 +52,9 @@ export const LoginPage = () => {
           <Button
             type="submit"
             className="w-full"
-            disabled={mutation.isPending}
+            disabled={loginMutation.isPending}
           >
-            {mutation.isPending
+            {loginMutation.isPending
               ? isLogin
                 ? "Logging in..."
                 : "Registering..."
