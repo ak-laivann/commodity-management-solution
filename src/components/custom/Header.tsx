@@ -19,7 +19,7 @@ import {
 import { useFetchUsers } from "@/hooks";
 import { AsyncUIWrapper } from "@/components/custom";
 
-export const Header = () => {
+export const Header = (props: { showSearch: boolean }) => {
   const [searchQuery, setSearchQuery] = useState("");
   const {
     users,
@@ -32,17 +32,21 @@ export const Header = () => {
   } = useFetchUsers();
 
   return (
-    <header className="flex items-center justify-between px-4 py-8 bg-background border-b">
+    <header className="flex items-center justify-between px-4 py-6">
       <div className="flex items-center gap-2">
-        <Input
-          placeholder="Search"
-          value={searchQuery}
-          onChange={(e) => setSearchQuery(e.target.value)}
-          className="w-64"
-        />
-        <Button onClick={() => console.log("Searching:", searchQuery)}>
-          Search
-        </Button>
+        {props.showSearch && (
+          <>
+            <Input
+              placeholder="Search"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="w-64"
+            />
+            <Button onClick={() => console.log("Searching:", searchQuery)}>
+              Search
+            </Button>
+          </>
+        )}
       </div>
 
       <div className="flex items-center gap-4">

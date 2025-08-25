@@ -1,7 +1,7 @@
 import { useQuery, type UseQueryOptions } from "@tanstack/react-query";
 
 export const useFetchData = <T>(
-  queryKey: string,
+  queryKey: string | number | (string | number)[],
   url: string,
   options?: Omit<UseQueryOptions<T>, "queryKey" | "queryFn">
 ) => {

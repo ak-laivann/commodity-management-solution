@@ -15,8 +15,6 @@ export const RootContainer = () => {
     isSignedIn: false,
   });
 
-  console.log("User State:", user);
-
   return (
     <UserContext.Provider value={{ ...user, setUser }}>
       <Routes>

@@ -9,20 +9,20 @@ const managerId_1 = faker.database.mongodbObjectId();
 
 // since this is used inside seeds of miragejs, I am having isSignedIn as true.
 // either way, we will go ahead with the login api and set this dynamically by then.
-export function getStoreKeeper(isFirstSet: boolean): User {
+export function getStoreKeeper(managerId: string, storeKeeperId: string): User {
   return {
-    id: faker.database.mongodbObjectId(),
+    id: storeKeeperId ?? faker.database.mongodbObjectId(),
     name: faker.person.fullName(),
     email: faker.internet.email(),
     role: UserRole.StoreKeeper,
     isSignedIn: true,
-    managerId: isFirstSet ? managerId : managerId_1,
+    managerId: managerId,
   };
 }
 
-export function getManager(isFirstSet: boolean, email?: string): User {
+export function getManager(id: string, email?: string): User {
   return {
-    id: isFirstSet ? managerId : managerId_1,
+    id,
     name: faker.person.fullName(),
     email: email ?? faker.internet.email(),
     role: UserRole.Manager,
@@ -35,7 +35,6 @@ export const mockGetFirstSetOfUsers: RouteHandler<
   Registry<typeof ModelRegistry, any>
 > = (schema, request) => {
   const users = schema.all("user").models;
-  console.log(users);
   return {
     // @ts-ignore
     manager: users.filter((user) => user.attrs.role === UserRole.Manager),
@@ -72,7 +71,7 @@ export const mockAuthLogin: RouteHandler<
       return new Response(401, {}, { error: "Invalid credentials" });
     }
 
-    const manager = getManager(true, email);
+    const manager = getManager(managerId, email);
     return {
       ...manager,
       token: "mock-jwt-token",
@@ -80,7 +79,7 @@ export const mockAuthLogin: RouteHandler<
   }
 
   if (signinMethod === "google" || signinMethod === "facebook") {
-    const manager = getManager(true);
+    const manager = getManager(managerId);
     return {
       ...manager,
       token: "mock-jwt-token",

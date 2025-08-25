@@ -2,11 +2,12 @@ import { UserContext } from "@/context";
 import { useMutateData } from "./useMutation";
 import { useContext } from "react";
 import { UserRole, type User } from "@/components/props";
+import { toast } from "react-toastify";
 
 export const useUserLogin = (signinMethod: string, onSuccess: () => void) => {
   const { setUser } = useContext(UserContext);
   const mutation = useMutateData<User, {}>(
-    `/api/v1/auth/login?signinMethod=${signinMethod}`,
+    `auth/login?signinMethod=${signinMethod}`,
     {
       onSuccess: (data) => {
         setUser?.({
@@ -18,6 +19,7 @@ export const useUserLogin = (signinMethod: string, onSuccess: () => void) => {
           managerId: data.managerId,
         });
         onSuccess();
+        toast.success("Login successful!");
       },
     }
   );

@@ -34,7 +34,7 @@ export const HomeContainer = () => {
 
   useEffect(() => {
     if (!isSignedIn) navigate("/login");
-  }, [isSignedIn, navigate]);
+  }, [isSignedIn]);
 
   return (
     <SidebarProvider>
@@ -54,7 +54,7 @@ export const HomeContainer = () => {
               <span className="text-lg font-bold px-2">BitStore</span>
             </SidebarHeader>
 
-            <SidebarMenu>
+            <SidebarMenu className="p-2">
               <SidebarMenuItem>
                 <SidebarMenuButton
                   asChild
@@ -90,7 +90,7 @@ export const HomeContainer = () => {
                   <SidebarMenuSub>
                     <SidebarMenuSubItem>
                       <SidebarMenuSubButton asChild>
-                        <Link to="/products">Products</Link>
+                        <Link to="/products/all">Products</Link>
                       </SidebarMenuSubButton>
                     </SidebarMenuSubItem>
                     <SidebarMenuSubItem>
@@ -106,7 +106,9 @@ export const HomeContainer = () => {
         </Sidebar>
 
         <div className="flex flex-col flex-1 overflow-hidden">
-          <Header />
+          <Header
+            showSearch={window.location.pathname.includes("products/all")}
+          />
 
           <main className="flex-1 overflow-auto p-6">
             <RootRouter />
