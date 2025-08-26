@@ -36,6 +36,7 @@ export const HomeContainer = () => {
     if (!isSignedIn) navigate("/login");
   }, [isSignedIn]);
 
+  // console.log("managerID", managerId);
   return (
     <SidebarProvider>
       <div className="flex h-screen w-screen">
@@ -55,20 +56,23 @@ export const HomeContainer = () => {
             </SidebarHeader>
 
             <SidebarMenu className="p-2">
-              <SidebarMenuItem>
-                <SidebarMenuButton
-                  asChild
-                  className="flex justify-between items-center"
-                >
-                  <Link to="/dashboard" className="flex w-full items-center">
-                    <span className="flex items-center">
-                      <LayoutDashboard className="mr-2" />
-                      Dashboard
-                    </span>
-                    <ChevronDown className="ml-auto opacity-50" size={16} />
-                  </Link>
-                </SidebarMenuButton>
-              </SidebarMenuItem>
+              {/* this managerid can be created as manager-id in the backend and in the frontend, we can check using .includes manager */}
+              {managerId?.includes("YouAreTheManager") && (
+                <SidebarMenuItem>
+                  <SidebarMenuButton
+                    asChild
+                    className="flex justify-between items-center"
+                  >
+                    <Link to="/dashboard" className="flex w-full items-center">
+                      <span className="flex items-center">
+                        <LayoutDashboard className="mr-2" />
+                        Dashboard
+                      </span>
+                      <ChevronDown className="ml-auto opacity-50" size={16} />
+                    </Link>
+                  </SidebarMenuButton>
+                </SidebarMenuItem>
+              )}
 
               <SidebarMenuItem>
                 <SidebarMenuButton

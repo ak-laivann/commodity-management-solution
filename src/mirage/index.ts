@@ -54,8 +54,8 @@ export function makeServer() {
     },
 
     seeds(server) {
-      const managerId = faker.database.mongodbObjectId();
-      const managerId_1 = faker.database.mongodbObjectId();
+      const managerId = "YouAreTheManager_1";
+      const managerId_1 = "YouAreTheManager_2";
 
       const storeKeeperIds = [
         faker.database.mongodbObjectId(),
@@ -66,8 +66,8 @@ export function makeServer() {
         faker.database.mongodbObjectId(),
       ];
 
-      server.create("user", getManager(managerId));
-      server.create("user_1", getManager(managerId_1));
+      server.create("user", getManager(managerId, undefined, true));
+      server.create("user_1", getManager(managerId_1, undefined, false));
 
       for (let i = 0; i < 3; i++) {
         server.create("user", getStoreKeeper(managerId, storeKeeperIds[i]));
@@ -77,6 +77,14 @@ export function makeServer() {
         );
 
         for (let j = 0; j < 30; j++) {
+          const firstSetProductStoreKeepers = storeKeeperIds.slice(
+            0,
+            faker.number.int({ min: 1, max: 3 })
+          );
+          const secondSetProductStoreKeepers = storeKeeperIds.slice(
+            3,
+            faker.number.int({ min: 4, max: 6 })
+          );
           const productId = faker.database.mongodbObjectId();
           const productId_1 = faker.database.mongodbObjectId();
           const status = [
@@ -85,13 +93,18 @@ export function makeServer() {
           ][faker.number.int({ min: 0, max: 1 })];
           server.create(
             "product",
-            getProduct(managerId, storeKeeperIds.slice(0, 3), productId, status)
+            getProduct(
+              managerId,
+              firstSetProductStoreKeepers,
+              productId,
+              status
+            )
           );
           server.create(
             "product",
             getProduct(
               managerId_1,
-              storeKeeperIds.slice(3, 6),
+              secondSetProductStoreKeepers,
               productId_1,
               status
             )
@@ -101,11 +114,21 @@ export function makeServer() {
             ["SALES", "REVENUE", "VIEWS"].forEach((metric) => {
               server.create(
                 "timeseriesproduct",
-                getProductTimeSeries(productId, metric)
+                getProductTimeSeries(
+                  productId,
+                  metric,
+                  managerId,
+                  firstSetProductStoreKeepers
+                )
               );
               server.create(
                 "timeseriesproduct",
-                getProductTimeSeries(productId_1, metric)
+                getProductTimeSeries(
+                  productId_1,
+                  metric,
+                  managerId_1,
+                  secondSetProductStoreKeepers
+                )
               );
             });
           }

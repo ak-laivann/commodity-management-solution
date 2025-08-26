@@ -36,7 +36,7 @@ export const useFetchUsers = () => {
   );
 
   useEffect(() => {
-    if (combinedUsers.length > 0) {
+    if (combinedUsers.length > 0 && !selectedUser) {
       setSelectedUser(combinedUsers[0].id);
     }
   }, [combinedUsers]);

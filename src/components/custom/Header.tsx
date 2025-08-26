@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import {
@@ -19,9 +19,11 @@ import {
 import { useFetchUsers } from "@/hooks";
 import { AsyncUIWrapper } from "@/components/custom";
 import { useSearchParams } from "react-router-dom";
+import { UserContext } from "@/context";
 
 export const Header = (props: { showSearch: boolean }) => {
   const [searchQuery, setSearchQuery] = useState("");
+
   const {
     users,
     selectedUser,
@@ -31,6 +33,23 @@ export const Header = (props: { showSearch: boolean }) => {
     error,
     toggleUsers,
   } = useFetchUsers();
+
+  const { setUser } = useContext(UserContext);
+
+  function handleUserChange(userId: string) {
+    setSelectedUser(userId);
+    const chosenUser = users.find((u) => u.id === userId);
+    if (chosenUser) {
+      setUser?.({
+        id: chosenUser.id,
+        name: chosenUser.name,
+        email: chosenUser.email,
+        role: chosenUser.role,
+        managerId: chosenUser.managerId || "",
+        isSignedIn: true,
+      });
+    }
+  }
 
   const [searchParams, setSearchParams] = useSearchParams();
 
@@ -63,7 +82,7 @@ export const Header = (props: { showSearch: boolean }) => {
         <AsyncUIWrapper isLoading={loading} isError={isError} error={error}>
           <Select
             value={selectedUser}
-            onValueChange={(val) => setSelectedUser(val)}
+            onValueChange={handleUserChange}
             disabled={loading}
           >
             <SelectTrigger className="w-48">

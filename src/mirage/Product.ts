@@ -11,11 +11,15 @@ export interface TimeSeries_Product {
   productId: string;
   metric: string;
   data: { date: string; value: number }[];
+  managerId: string;
+  storeOwnerIds: string[];
 }
 
 export const getProductTimeSeries = (
   productId: string,
-  metric: string
+  metric: string,
+  managerId?: string,
+  storeOwnerIds?: string[]
 ): any => {
   const data: { date: string; value: number }[] = [];
 
@@ -51,6 +55,12 @@ export const getProductTimeSeries = (
     productId,
     metric,
     data,
+    managerId: managerId ?? faker.database.mongodbObjectId(),
+    storeOwnerIds: storeOwnerIds ?? [
+      faker.database.mongodbObjectId(),
+      faker.database.mongodbObjectId(),
+      faker.database.mongodbObjectId(),
+    ],
   };
 };
 
@@ -101,6 +111,8 @@ export const getProduct = (
 export const mockGetProducts: RouteHandler<
   Registry<typeof ModelRegistry, any>
 > = (schema, request) => {
+  const { managerId, storeOwnerId } = request.queryParams;
+
   const page = Number(request.queryParams.page) || 1;
   const limit = Number(request.queryParams.limit) || 10;
   const searchTerm = (
@@ -114,7 +126,7 @@ export const mockGetProducts: RouteHandler<
     | undefined;
   const sortOrder = (request.queryParams.sortOrder as "asc" | "desc") || "asc";
 
-  const products = schema.all("product").models;
+  let products = schema.all("product").models;
   const timeseries = schema.all("timeseriesproduct").models.map((m) => m.attrs);
 
   const timeseriesMap: Record<string, { views: number; revenue: number }> = {};
@@ -135,6 +147,20 @@ export const mockGetProducts: RouteHandler<
         0
       );
     }
+  });
+
+  products = products.filter((p) => {
+    const attrs = p.attrs as Product;
+
+    if (managerId) {
+      return attrs.managerId === managerId;
+    }
+
+    if (storeOwnerId) {
+      return attrs.storeOwnerIds?.includes(storeOwnerId as string);
+    }
+
+    return true;
   });
 
   const filteredProducts = products.filter((p) => {
@@ -215,6 +241,14 @@ export const mockPostProduct: RouteHandler<
   Registry<typeof ModelRegistry, any>
 > = (schema, request) => {
   const attrs = JSON.parse(request.requestBody);
+
+  if (attrs.storeOwnerId) {
+    attrs.storeOwnerIds = attrs.storeOwnerIds || [];
+    if (!attrs.storeOwnerIds.includes(attrs.storeOwnerId)) {
+      attrs.storeOwnerIds.push(attrs.storeOwnerId);
+    }
+  }
+
   const newProduct = schema.create("product", attrs);
   return newProduct.attrs;
 };
@@ -225,12 +259,23 @@ export const mockPutProduct: RouteHandler<
   const id = request.params.id;
   const attrs = JSON.parse(request.requestBody);
   const product = schema.find("product", id);
-  if (product) {
-    product.update(attrs);
-    return product.attrs;
-  } else {
+
+  if (!product) {
     return new Response(404, {}, { error: "Product not found" });
   }
+
+  if (attrs.storeOwnerId) {
+    // @ts-ignore
+    const existingStoreOwnerIds = [...(product.attrs.storeOwnerIds || [])];
+    if (!existingStoreOwnerIds.includes(attrs.storeOwnerId)) {
+      existingStoreOwnerIds.push(attrs.storeOwnerId);
+    }
+    attrs.storeOwnerIds = existingStoreOwnerIds;
+    delete attrs.storeOwnerId;
+  }
+
+  product.update(attrs);
+  return product.attrs;
 };
 
 export const mockDeleteProduct: RouteHandler<
@@ -250,11 +295,20 @@ export const mockDeleteProduct: RouteHandler<
 export const mockGetProductTimeSeries: RouteHandler<
   Registry<typeof ModelRegistry, any>
 > = (schema, request) => {
-  const timeseries = schema.all("timeseriesproduct").models.map((m) => m.attrs);
+  let timeseries = schema.all("timeseriesproduct").models.map((m) => m.attrs);
 
   const queryParams = new URLSearchParams(request.queryParams as any);
   const startParam = queryParams.get("start");
   const endParam = queryParams.get("end");
+  const managerId = queryParams.get("managerId");
+  const storeOwnerId = queryParams.get("storeOwnerId");
+
+  // Filter by managerId or storeOwnerId
+  timeseries = timeseries.filter((ts: any) => {
+    if (managerId) return ts.managerId === managerId;
+    if (storeOwnerId) return ts.storeOwnerIds?.includes(storeOwnerId);
+    return true;
+  });
 
   const now = new Date();
   let startDate: Date;

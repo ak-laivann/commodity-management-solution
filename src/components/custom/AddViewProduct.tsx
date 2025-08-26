@@ -21,6 +21,7 @@ interface AddViewProductProps {
   onSaveAsDraft?: (data: Product) => void;
   viewProductData?: Partial<Product>;
   externalForm?: any;
+  disableSubmitting?: boolean;
 }
 
 export default function AddViewProduct({
@@ -29,6 +30,7 @@ export default function AddViewProduct({
   onSaveAsDraft,
   viewProductData,
   externalForm,
+  disableSubmitting = false,
 }: AddViewProductProps) {
   const [previewFiles, setPreviewFiles] = useState<UploadFile[]>([]);
   const [thumbnailFiles, setThumbnailFiles] = useState<UploadFile[]>([]);
@@ -313,6 +315,7 @@ export default function AddViewProduct({
         onCancel={handleCancelModal}
         footer={[
           <Button
+            disabled={disableSubmitting}
             key="draft"
             variant="outline"
             className="mr-4 border-gray-400 text-gray-700"
@@ -320,7 +323,11 @@ export default function AddViewProduct({
           >
             Save as Draft
           </Button>,
-          <Button key="submit" onClick={handleSubmit}>
+          <Button
+            key="submit"
+            onClick={handleSubmit}
+            disabled={disableSubmitting}
+          >
             Submit
           </Button>,
         ]}

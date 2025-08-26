@@ -20,14 +20,18 @@ export function getStoreKeeper(managerId: string, storeKeeperId: string): User {
   };
 }
 
-export function getManager(id: string, email?: string): User {
+export function getManager(
+  id: string,
+  email?: string,
+  isFirstSet?: boolean
+): User {
   return {
     id,
     name: faker.person.fullName(),
     email: email ?? faker.internet.email(),
     role: UserRole.Manager,
     isSignedIn: true,
-    managerId: "YouAreTheManager",
+    managerId: isFirstSet ? "YouAreTheManager_1" : "YouAreTheManager_2",
   };
 }
 
@@ -71,7 +75,7 @@ export const mockAuthLogin: RouteHandler<
       return new Response(401, {}, { error: "Invalid credentials" });
     }
 
-    const manager = getManager(managerId, email);
+    const manager = getManager(managerId, email, true);
     return {
       ...manager,
       token: "mock-jwt-token",
@@ -79,7 +83,7 @@ export const mockAuthLogin: RouteHandler<
   }
 
   if (signinMethod === "google" || signinMethod === "facebook") {
-    const manager = getManager(managerId);
+    const manager = getManager(managerId, undefined, true);
     return {
       ...manager,
       token: "mock-jwt-token",

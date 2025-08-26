@@ -16,6 +16,7 @@ export const AddProductPage = () => {
       onSubmit={(data) => {
         postProduct.mutate(data);
       }}
+      disableSubmitting={postProduct.isPending}
     />
   );
 };

@@ -117,6 +117,7 @@ export const ProductListingPage = () => {
                           onSuccess: onDeleteSuccess,
                         });
                       }}
+                      disableDelete={mutation.isPending}
                       sortConfig={sort}
                       onSortChange={(newSort) => {
                         setSort(newSort ?? { type: "views", order: "normal" });
@@ -134,6 +135,7 @@ export const ProductListingPage = () => {
                     <ProductTable
                       data={data?.[Product_Creation_Status.DRAFT] ?? []}
                       onDelete={(id) => mutation.mutate(id)}
+                      disableDelete={mutation.isPending}
                       sortConfig={sort}
                       onSortChange={(newSort) => {
                         setSort(newSort ?? { type: "views", order: "normal" });

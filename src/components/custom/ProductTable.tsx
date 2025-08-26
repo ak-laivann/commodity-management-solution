@@ -33,6 +33,7 @@ interface ProductTableProps {
   onSortChange?: (
     sort: { type: "views" | "pricing" | "revenue"; order: SortOrder } | null
   ) => void;
+  disableDelete?: boolean;
 }
 
 export function ProductTable({
@@ -40,6 +41,7 @@ export function ProductTable({
   onDelete,
   sortConfig,
   onSortChange,
+  disableDelete = false,
 }: ProductTableProps) {
   const navigate = useNavigate();
 
@@ -121,6 +123,7 @@ export function ProductTable({
             Edit
           </Button>
           <Button
+            disabled={disableDelete}
             variant="destructive"
             size="sm"
             onClick={() => onDelete(row.original.id)}
