@@ -3,3 +3,4 @@ export * from "./AsyncFetchUI";
 export * from "./AddViewProduct";
 export * from "./ProductTable";
 export * from "./Pagination";
+export * from "./MetricCharts";

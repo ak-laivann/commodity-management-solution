@@ -18,6 +18,7 @@ import {
 } from "@/components/ui/select";
 import { useFetchUsers } from "@/hooks";
 import { AsyncUIWrapper } from "@/components/custom";
+import { useSearchParams } from "react-router-dom";
 
 export const Header = (props: { showSearch: boolean }) => {
   const [searchQuery, setSearchQuery] = useState("");
@@ -31,6 +32,17 @@ export const Header = (props: { showSearch: boolean }) => {
     toggleUsers,
   } = useFetchUsers();
 
+  const [searchParams, setSearchParams] = useSearchParams();
+
+  function searchProducts(value: string) {
+    if (value.trim()) {
+      searchParams.set("search", value);
+    } else {
+      searchParams.delete("search");
+    }
+    setSearchParams(searchParams);
+  }
+
   return (
     <header className="flex items-center justify-between px-4 py-6">
       <div className="flex items-center gap-2">
@@ -42,9 +54,7 @@ export const Header = (props: { showSearch: boolean }) => {
               onChange={(e) => setSearchQuery(e.target.value)}
               className="w-64"
             />
-            <Button onClick={() => console.log("Searching:", searchQuery)}>
-              Search
-            </Button>
+            <Button onClick={() => searchProducts(searchQuery)}>Search</Button>
           </>
         )}
       </div>

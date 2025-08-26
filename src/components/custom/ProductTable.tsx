@@ -1,13 +1,11 @@
-import React from "react";
 import {
   useReactTable,
   type ColumnDef,
   getCoreRowModel,
-  getSortedRowModel,
   flexRender,
 } from "@tanstack/react-table";
 import { useNavigate } from "react-router-dom";
-import { ArrowUp, ArrowDown } from "lucide-react";
+import { ArrowUp, ArrowDown, ArrowUpDown } from "lucide-react";
 import {
   Table,
   TableBody,
@@ -26,13 +24,47 @@ interface ProductWithViews {
   revenue: number;
 }
 
+type SortOrder = "asc" | "desc" | "normal";
+
 interface ProductTableProps {
   data: ProductWithViews[];
   onDelete: (id: string) => void;
+  sortConfig: { type: "views" | "pricing" | "revenue"; order: SortOrder };
+  onSortChange?: (
+    sort: { type: "views" | "pricing" | "revenue"; order: SortOrder } | null
+  ) => void;
 }
 
-export function ProductTable({ data, onDelete }: ProductTableProps) {
+export function ProductTable({
+  data,
+  onDelete,
+  sortConfig,
+  onSortChange,
+}: ProductTableProps) {
   const navigate = useNavigate();
+
+  const handleSort = (type: "views" | "pricing" | "revenue") => {
+    let nextOrder: SortOrder;
+    if (sortConfig.type !== type || sortConfig.order === "normal") {
+      nextOrder = "asc";
+    } else if (sortConfig.order === "asc") {
+      nextOrder = "desc";
+    } else if (sortConfig.order === "desc") {
+      nextOrder = "normal";
+    } else {
+      nextOrder = "asc";
+    }
+
+    onSortChange?.(nextOrder === "normal" ? null : { type, order: nextOrder });
+  };
+
+  const getSortIcon = (type: "views" | "pricing" | "revenue") => {
+    if (sortConfig.type !== type || sortConfig.order === "normal")
+      return <ArrowUpDown size={14} />;
+    if (sortConfig.order === "asc") return <ArrowUp size={14} />;
+    if (sortConfig.order === "desc") return <ArrowDown size={14} />;
+    return <ArrowUpDown size={14} />;
+  };
 
   const columns: ColumnDef<ProductWithViews>[] = [
     {
@@ -41,55 +73,40 @@ export function ProductTable({ data, onDelete }: ProductTableProps) {
       cell: (info) => info.getValue(),
     },
     {
-      accessorKey: "views",
-      header: ({ column }) => (
+      id: "views",
+      header: () => (
         <button
-          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+          onClick={() => handleSort("views")}
           className="flex items-center gap-1"
         >
-          Views{" "}
-          {column.getIsSorted() === "asc" ? (
-            <ArrowUp size={14} />
-          ) : column.getIsSorted() === "desc" ? (
-            <ArrowDown size={14} />
-          ) : null}
+          Views {getSortIcon("views")}
         </button>
       ),
-      cell: (info) => info.getValue(),
+      cell: (info) => info.row.original.views,
     },
     {
-      accessorKey: "pricing.price",
-      header: ({ column }) => (
+      id: "pricing",
+      header: () => (
         <button
-          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+          onClick={() => handleSort("pricing")}
           className="flex items-center gap-1"
         >
-          Pricing{" "}
-          {column.getIsSorted() === "asc" ? (
-            <ArrowUp size={14} />
-          ) : column.getIsSorted() === "desc" ? (
-            <ArrowDown size={14} />
-          ) : null}
+          Pricing {getSortIcon("pricing")}
         </button>
       ),
-      cell: (info) => `$${info.getValue()}`,
+      cell: (info) => `$${info.row.original.pricing.price}`,
     },
     {
-      accessorKey: "revenue",
-      header: ({ column }) => (
+      id: "revenue",
+      header: () => (
         <button
-          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+          onClick={() => handleSort("revenue")}
           className="flex items-center gap-1"
         >
-          Revenue{" "}
-          {column.getIsSorted() === "asc" ? (
-            <ArrowUp size={14} />
-          ) : column.getIsSorted() === "desc" ? (
-            <ArrowDown size={14} />
-          ) : null}
+          Revenue {getSortIcon("revenue")}
         </button>
       ),
-      cell: (info) => `$${info.getValue()}`,
+      cell: (info) => `$${info.row.original.revenue}`,
     },
     {
       id: "manage",
@@ -119,7 +136,6 @@ export function ProductTable({ data, onDelete }: ProductTableProps) {
     data,
     columns,
     getCoreRowModel: getCoreRowModel(),
-    getSortedRowModel: getSortedRowModel(),
   });
 
   return (

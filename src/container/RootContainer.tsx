@@ -1,7 +1,7 @@
 import { Route, Routes } from "react-router-dom";
 import { HomeContainer } from "./HomeContainer";
 import { LoginPage } from "../pages";
-import { UserContext } from "../context/UserContext";
+import { UserContext } from "../context";
 import { useState } from "react";
 import { UserRole, type User } from "@/components/props";
 

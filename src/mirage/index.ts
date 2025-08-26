@@ -11,8 +11,10 @@ import { faker } from "@faker-js/faker";
 import {
   getProduct,
   getProductTimeSeries,
+  mockDeleteProduct,
   mockGetProduct,
   mockGetProducts,
+  mockGetProductTimeSeries,
   mockPostProduct,
   mockPutProduct,
 } from "./Product";
@@ -30,9 +32,13 @@ export function makeServer() {
       this.post("/auth/login", mockAuthLogin);
 
       this.get("/products", mockGetProducts);
+
       this.post("/products", mockPostProduct);
       this.put("/products/:id", mockPutProduct);
       this.get("/products/:id", mockGetProduct);
+      this.delete("/products/:id", mockDeleteProduct);
+
+      this.get("/products/metrics", mockGetProductTimeSeries);
 
       // this guy is useful in case we want to move to real api.
       // just set use mirage to false or remove it in the api call

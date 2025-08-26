@@ -2,12 +2,50 @@ import type { Product } from "@/components/props";
 import { useFetchData } from "./useFetch";
 import { useMutateData } from "./useMutation";
 import { toast } from "react-toastify";
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
+import { useQueryClient } from "@tanstack/react-query";
 
-export const useFetchProducts = (page: number = 1, limit: number = 10) => {
+export const useFetchProducts = (
+  page: number = 1,
+  limit: number = 10,
+  searchTerm: string = "",
+  sort: { type: "views" | "pricing" | "revenue"; order: "asc" | "desc" } | null
+) => {
+  const query = new URLSearchParams({
+    page: page.toString(),
+    limit: limit.toString(),
+    ...(searchTerm ? { search: searchTerm } : {}),
+    ...(sort ? { sortField: sort.type, sortOrder: sort.order } : {}),
+  }).toString();
+
   return useFetchData<any>(
-    ["products", page, limit],
-    `products?page=${page}&limit=${limit}`
+    ["products", page, limit, searchTerm, JSON.stringify(sort)],
+    `products?${query}`,
+    { refetchOnMount: true }
+  );
+};
+
+export const useFetchProductMetrics = () => {
+  const now = new Date();
+  const endDate = now.toISOString();
+
+  const startDate = new Date(
+    now.getFullYear(),
+    now.getMonth() - 2,
+    now.getDate()
+  ).toISOString();
+
+  const queryString = new URLSearchParams({
+    start: startDate,
+    end: endDate,
+  });
+
+  return useFetchData<any>(
+    "products-metrics",
+    `products/metrics?${queryString.toString()}`,
+    {
+      refetchOnMount: true,
+    }
   );
 };
 
@@ -44,12 +82,14 @@ export const useEditProduct = (productId: string) => {
   return mutation;
 };
 
-export const useDeleteProduct = (productId: string) => {
-  return useMutateData<Product, {}>(
-    `products/${productId}/delete`,
+export const useDeleteProduct = () => {
+  const navigate = useNavigate();
+
+  return useMutateData<Product, string>(
+    (productId) => `products/${productId}`,
     {
-      onSuccess: () => {
-        toast.warn("Product Deleted Successfully");
+      onError: (e) => {
+        toast.error(`Failed to delete: ${e.message}`);
       },
     },
     "DELETE"
