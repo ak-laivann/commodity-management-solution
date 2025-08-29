@@ -3,6 +3,8 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
 import { useUserLogin } from "@/hooks";
+import { faker } from "@faker-js/faker";
+import { useTheme } from "@/context/ThemeContext";
 
 export const LoginPage = () => {
   const [email, setEmail] = useState("");
@@ -11,6 +13,8 @@ export const LoginPage = () => {
   const [signinMethod, setSigninMethod] = useState<
     "signup" | "login" | "google" | "facebook"
   >("signup");
+
+  const { theme } = useTheme();
 
   const navigate = useNavigate();
   const loginMutation = useUserLogin(signinMethod, () =>
@@ -28,6 +32,8 @@ export const LoginPage = () => {
     loginMutation.mutate({});
   };
 
+  const bgUrl = theme === "dark" ? "/images/dark.jpg" : "/images/light.jpg";
+
   return (
     <div className="flex min-h-screen">
       <div className="flex flex-col justify-center items-center w-2/3 p-8">
@@ -35,7 +41,6 @@ export const LoginPage = () => {
           <h1 className="text-3xl font-bold text-center mb-4">
             {isLogin ? "Login to Your Account" : "Create an Account"}
           </h1>
-
           <Input
             type="email"
             placeholder="Email"
@@ -48,7 +53,6 @@ export const LoginPage = () => {
             value={password}
             onChange={(e) => setPassword(e.target.value)}
           />
-
           <Button
             type="submit"
             className="w-full"
@@ -62,7 +66,11 @@ export const LoginPage = () => {
               ? "Login"
               : "Get Started"}
           </Button>
-
+          <div className="flex items-center justify-center">
+            <br />
+            OR
+          </div>
+          <br />
           <div className="flex flex-col space-y-3">
             <Button
               type="button"
@@ -79,7 +87,6 @@ export const LoginPage = () => {
               Sign in with Facebook
             </Button>
           </div>
-
           <p className="text-center text-sm">
             {isLogin ? "Don't have an account?" : "Already have an account?"}{" "}
             <button
@@ -95,7 +102,7 @@ export const LoginPage = () => {
 
       <div className="w-1/3">
         <img
-          src="/images/auth-bg.jpg"
+          src={bgUrl}
           alt="Auth Background"
           className="w-full h-full object-cover"
         />
