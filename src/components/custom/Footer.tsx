@@ -4,7 +4,10 @@ import { Facebook, Instagram, Linkedin } from "lucide-react";
 
 export const Footer = () => {
   return (
-    <footer className="w-full border-t px-8 py-12">
+    <footer
+      className="w-full px-8 py-12 rounded-t-[2rem]"
+      style={{ backgroundColor: "var(--footer-1)" }}
+    >
       <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-4 gap-8">
         <div>
           <div className="flex items-center gap-2 mb-4">
