@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback, useMemo } from "react";
+import { useState, useEffect, useCallback, useMemo, useRef } from "react";
 import { useFetchData } from "./useFetch";
 import type { User } from "@/components/props";
 
@@ -27,6 +27,8 @@ export const useFetchUsers = () => {
     refetch: refetchAlt,
   } = useFetchData<UsersResponse>("users_1", "users_1", { enabled: useAlt });
 
+  const prevUseAlt = useRef(useAlt);
+
   const combinedUsers = useMemo(
     () =>
       useAlt
@@ -36,10 +38,19 @@ export const useFetchUsers = () => {
   );
 
   useEffect(() => {
-    if (combinedUsers.length > 0 && !selectedUser) {
-      setSelectedUser(combinedUsers[0].id);
+    if (combinedUsers.length > 0) {
+      if (!selectedUser) {
+        setSelectedUser(combinedUsers[0].id);
+        return;
+      }
+
+      if (prevUseAlt.current !== useAlt) {
+        setSelectedUser(combinedUsers[0].id);
+      }
+
+      prevUseAlt.current = useAlt;
     }
-  }, [combinedUsers]);
+  }, [combinedUsers, useAlt]);
 
   const toggleUsers = useCallback(async () => {
     setUseAlt((prev) => !prev);

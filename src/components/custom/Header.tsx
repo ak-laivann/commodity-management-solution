@@ -1,4 +1,4 @@
-import { useContext, useEffect, useState } from "react";
+import { useContext, useState } from "react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import {
@@ -18,7 +18,7 @@ import {
 } from "@/components/ui/select";
 import { useFetchUsers } from "@/hooks";
 import { AsyncUIWrapper } from "@/components/custom";
-import { useSearchParams } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import { UserContext } from "@/context";
 
 export const Header = (props: { showSearch: boolean }) => {
@@ -34,7 +34,8 @@ export const Header = (props: { showSearch: boolean }) => {
     toggleUsers,
   } = useFetchUsers();
 
-  const { setUser } = useContext(UserContext);
+  const { setUser, role } = useContext(UserContext);
+  const navigate = useNavigate();
 
   function handleUserChange(userId: string) {
     setSelectedUser(userId);
@@ -48,6 +49,11 @@ export const Header = (props: { showSearch: boolean }) => {
         managerId: chosenUser.managerId || "",
         isSignedIn: true,
       });
+    }
+    if (chosenUser?.role !== "manager") {
+      if (window.location.pathname.includes("dashboard")) {
+        navigate("/products");
+      }
     }
   }
 

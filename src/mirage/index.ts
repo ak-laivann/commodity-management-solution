@@ -19,6 +19,12 @@ import {
   mockPutProduct,
 } from "./Product";
 import { Product_Creation_Status } from "@/components/props";
+import {
+  getSubscription,
+  mockGetEarnings,
+  mockGetMetricsComparison,
+  mockGetRevenueForDashboard,
+} from "./dashboard";
 
 export function makeServer() {
   return createServer({
@@ -40,6 +46,10 @@ export function makeServer() {
 
       this.get("/products/metrics", mockGetProductTimeSeries);
 
+      this.get("/revenue", mockGetRevenueForDashboard);
+      this.get("/earnings", mockGetEarnings);
+      this.get("/metricsComparison", mockGetMetricsComparison);
+
       // this guy is useful in case we want to move to real api.
       // just set use mirage to false or remove it in the api call
       // and api calls will be made to the real api.
@@ -57,6 +67,8 @@ export function makeServer() {
       const managerId = "YouAreTheManager_1";
       const managerId_1 = "YouAreTheManager_2";
 
+      const manager = getManager(managerId, undefined, true);
+      const manager2 = getManager(managerId_1, undefined, false);
       const storeKeeperIds = [
         faker.database.mongodbObjectId(),
         faker.database.mongodbObjectId(),
@@ -66,8 +78,8 @@ export function makeServer() {
         faker.database.mongodbObjectId(),
       ];
 
-      server.create("user", getManager(managerId, undefined, true));
-      server.create("user_1", getManager(managerId_1, undefined, false));
+      server.create("user", manager);
+      server.create("user_1", manager2);
 
       for (let i = 0; i < 3; i++) {
         server.create("user", getStoreKeeper(managerId, storeKeeperIds[i]));
@@ -132,6 +144,8 @@ export function makeServer() {
               );
             });
           }
+          server.create("subscription", getSubscription(managerId));
+          server.create("subscription", getSubscription(managerId_1));
         }
       }
     },

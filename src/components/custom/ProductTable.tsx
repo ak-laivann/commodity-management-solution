@@ -22,6 +22,7 @@ interface ProductWithViews {
   views: number;
   pricing: { price: number };
   revenue: number;
+  file: { previewimage?: any[] };
 }
 
 type SortOrder = "asc" | "desc" | "normal";
@@ -72,8 +73,27 @@ export function ProductTable({
     {
       accessorKey: "productName",
       header: "Product Name",
-      cell: (info) => info.getValue(),
+      cell: ({ row }) => {
+        const { productName, file } = row.original;
+        return (
+          <div className="flex items-center gap-3">
+            {file.previewimage ? (
+              <img
+                src={file.previewimage[0]}
+                alt={productName}
+                className="w-10 h-10 rounded-md object-cover border"
+              />
+            ) : (
+              <div className="w-10 h-10 rounded-md bg-gray-200 flex items-center justify-center text-xs text-gray-500">
+                N/A
+              </div>
+            )}
+            <span className="font-medium">{productName}</span>
+          </div>
+        );
+      },
     },
+
     {
       id: "views",
       header: () => (

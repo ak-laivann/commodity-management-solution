@@ -7,13 +7,14 @@ import { useDeleteProduct, useFetchProducts } from "@/hooks/useProduct";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useNavigate, useSearchParams } from "react-router-dom";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useContext } from "react";
 import { Product_Creation_Status } from "@/components/props";
 import { Button } from "@/components/ui/button";
 import { Download, Filter, Plus } from "lucide-react";
 import { ProductListingChart } from "./ProductListingCharts";
 import { Excel } from "antd-table-saveas-excel";
 import { toast } from "react-toastify";
+import { UserContext } from "@/context";
 
 interface IExcelColumn {
   title: string;
@@ -46,6 +47,8 @@ export const ProductListingPage = () => {
       setLastSearchTerm(searchTerm);
     }
   }, [searchTerm, lastSearchTerm]);
+
+  const { name, id } = useContext(UserContext);
 
   const { data, isLoading, isError, error, refetch } = useFetchProducts(
     page,

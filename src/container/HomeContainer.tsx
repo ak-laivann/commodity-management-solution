@@ -36,7 +36,6 @@ export const HomeContainer = () => {
     if (!isSignedIn) navigate("/login");
   }, [isSignedIn]);
 
-  // console.log("managerID", managerId);
   return (
     <SidebarProvider>
       <div className="flex h-screen w-screen">
@@ -57,7 +56,7 @@ export const HomeContainer = () => {
 
             <SidebarMenu className="p-2">
               {/* this managerid can be created as manager-id in the backend and in the frontend, we can check using .includes manager */}
-              {managerId?.includes("YouAreTheManager") && (
+              {role === "manager" && (
                 <SidebarMenuItem>
                   <SidebarMenuButton
                     asChild

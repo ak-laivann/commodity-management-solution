@@ -4,8 +4,8 @@ import type { RouteHandler } from "miragejs/server";
 import type { ModelRegistry } from "./MirageModels";
 import { UserRole, type User } from "@/components/props";
 
-const managerId = faker.database.mongodbObjectId();
-const managerId_1 = faker.database.mongodbObjectId();
+const managerId = "YouAreTheManager_1";
+const managerId_1 = "YouAreTheManager_2";
 
 // since this is used inside seeds of miragejs, I am having isSignedIn as true.
 // either way, we will go ahead with the login api and set this dynamically by then.

@@ -1,6 +1,6 @@
 import { Model } from "miragejs";
-import type { Product, User } from "@/components/props";
-import type { TimeSeries_Product } from "./Product";
+import type { Product, User, TimeSeries_Product } from "@/components/props";
+import type { SubscriptionTimeSeries } from "./dashboard";
 
 export const ModelRegistry = {
   user: Model.extend<Partial<User>>({}),
@@ -9,4 +9,13 @@ export const ModelRegistry = {
   user_1: Model.extend<Partial<User>>({}),
   product: Model.extend<Partial<Product>>({}),
   timeseriesproduct: Model.extend<Partial<TimeSeries_Product>>({}),
+  subscription: Model.extend<Partial<SubscriptionTimeSeries>>({}),
+  sales: Model.extend<
+    Partial<{
+      productId: string;
+      amount: number;
+      customerMail: string;
+      customerName: string;
+    }>
+  >({}),
 };
