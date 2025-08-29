@@ -5,6 +5,7 @@ import { useNavigate } from "react-router-dom";
 import { useUserLogin } from "@/hooks";
 import { faker } from "@faker-js/faker";
 import { useTheme } from "@/context/ThemeContext";
+import { AsyncUIWrapper } from "@/components/custom";
 
 export const LoginPage = () => {
   const [email, setEmail] = useState("");
@@ -73,6 +74,7 @@ export const LoginPage = () => {
           <br />
           <div className="flex flex-col space-y-3">
             <Button
+              disabled={loginMutation.isPending}
               type="button"
               variant="outline"
               onClick={() => handleSocialSignIn("google")}
@@ -80,6 +82,7 @@ export const LoginPage = () => {
               Sign in with Google
             </Button>
             <Button
+              disabled={loginMutation.isPending}
               type="button"
               variant="outline"
               onClick={() => handleSocialSignIn("facebook")}
@@ -90,6 +93,7 @@ export const LoginPage = () => {
           <p className="text-center text-sm">
             {isLogin ? "Don't have an account?" : "Already have an account?"}{" "}
             <button
+              disabled={loginMutation.isPending}
               type="button"
               onClick={() => setIsLogin(!isLogin)}
               className="text-blue-600 hover:underline"
@@ -98,6 +102,13 @@ export const LoginPage = () => {
             </button>
           </p>
         </form>
+        <AsyncUIWrapper
+          isError={loginMutation.isError}
+          isLoading={loginMutation.isPending}
+          error={loginMutation.error}
+        >
+          <></>
+        </AsyncUIWrapper>
       </div>
 
       <div className="w-1/3">

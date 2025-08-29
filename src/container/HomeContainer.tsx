@@ -24,6 +24,7 @@ import {
 } from "lucide-react";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Footer, Header } from "@/components/custom";
+import { toast } from "react-toastify";
 
 export const HomeContainer = () => {
   const { isSignedIn, email, id, name, role, managerId } =
@@ -35,6 +36,10 @@ export const HomeContainer = () => {
   useEffect(() => {
     if (!isSignedIn) navigate("/login");
   }, [isSignedIn]);
+
+  useEffect(() => {
+    toast.info("Press Alt Shift D to toggle theme");
+  }, []);
 
   return (
     <>

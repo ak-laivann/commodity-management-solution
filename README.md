@@ -1,69 +1,62 @@
 # React + TypeScript + Vite
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
-
-Currently, two official plugins are available:
-
 - [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
 
-## Expanding the ESLint configuration
+---
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+# 🛒 Store Management App
 
-```js
-export default tseslint.config([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+A role-based Vite application with authentication, theming, and user management.
 
-      // Remove tseslint.configs.recommended and replace with this
-      ...tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      ...tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      ...tseslint.configs.stylisticTypeChecked,
+## 🚀 Features
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+- **Authentication**
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+  - Login with **Google** or **Facebook** (social logins).
+  - Login with **password** (default password: `1000`).
+  - No user data is stored persistently.
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+- **Dark Mode**
 
-export default tseslint.config([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+  - Toggle dark mode with **`Alt + Shift + D`**.
+
+- **User Roles**
+
+  - On first login, users are created and added to a dropdown list.
+  - Default role: **Manager**.
+  - Users can switch roles between:
+    - **Manager** → Full access, including **Dashboard**.
+    - **Storekeeper** → No access to Dashboard.
+  - Role change immediately updates the UI.
+
+- **Product Management**
+
+  - All users (Managers & Storekeepers) can:
+    - Add products
+    - Edit products
+    - View products
+    - Access product listing page
+
+- **Manager Switching**
+
+  - Click the **profile icon** (top right).
+  - Select **Change Set of Users**.
+  - Pick any user from the dropdown to switch manager context.
+
+- You can download the listing page as excel as well.
+
+## Dependencies used
+
+- [x] [AntDesign](https://ant.design/) - for UI and icons
+- [x] [Faker-js](https://fakerjs.dev/) - for creating random data and simulate ai responses.
+- [x] [React](https://react.dev/) - come-on! I would have died before finishing this project if it wasn't for him. (_That's why he is the GOAT! the GOAT!!!_)
+- [x] [React-router-dom](https://reactrouter.com/) - for navigation and combining layouts through routes (SPA!).
+- [x] [React-toastify](https://www.npmjs.com/package/react-toastify) - for toast and they have custom controls too!
+- [x] [Typescript](https://www.typescriptlang.org/) - The protector. (_It was perfect! PERFECT!. Down to the last minute detail_)
+- [x] [ShadCn](https://ui.shadcn.com/) - Ready made UIs with charts.
+- [x] [Tansack](https://tanstack.com/) - Easy to implement Async handlings.
+- [x] [Mirage](https://miragejs.com/) - The name should tell you - MIRAGE (backend mock)/
+
+# Live Link
+
+- [x] [Commodity Management Solution](https://commodity-management-solution.vercel.app/products/all) - Deployed in [Vercel](https://vercel.com/)
