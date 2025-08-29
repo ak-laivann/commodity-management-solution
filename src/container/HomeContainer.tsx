@@ -23,7 +23,7 @@ import {
   LayoutDashboard,
 } from "lucide-react";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
-import { Header } from "@/components/custom";
+import { Footer, Header } from "@/components/custom";
 
 export const HomeContainer = () => {
   const { isSignedIn, email, id, name, role, managerId } =
@@ -37,87 +37,93 @@ export const HomeContainer = () => {
   }, [isSignedIn]);
 
   return (
-    <SidebarProvider>
-      <div className="flex h-screen w-screen">
-        <Sidebar
-          side="left"
-          collapsible="icon"
-          className="h-screen sticky top-0"
-        >
-          <SidebarContent>
-            <SidebarHeader className="flex flex-row items-center gap-2">
-              <Avatar className="w-12 h-12 p-2">
-                <AvatarFallback>
-                  <UserIcon />
-                </AvatarFallback>
-              </Avatar>
-              <span className="text-lg font-bold px-2">BitStore</span>
-            </SidebarHeader>
+    <>
+      <SidebarProvider>
+        <div className="flex h-screen w-screen">
+          <Sidebar
+            side="left"
+            collapsible="icon"
+            className="h-screen sticky top-0"
+          >
+            <SidebarContent>
+              <SidebarHeader className="flex flex-row items-center gap-2">
+                <Avatar className="w-12 h-12 p-2">
+                  <AvatarFallback>
+                    <UserIcon />
+                  </AvatarFallback>
+                </Avatar>
+                <span className="text-lg font-bold px-2">BitStore</span>
+              </SidebarHeader>
 
-            <SidebarMenu className="p-2">
-              {/* this managerid can be created as manager-id in the backend and in the frontend, we can check using .includes manager */}
-              {role === "manager" && (
+              <SidebarMenu className="p-2">
+                {/* this managerid can be created as manager-id in the backend and in the frontend, we can check using .includes manager */}
+                {role === "manager" && (
+                  <SidebarMenuItem>
+                    <SidebarMenuButton
+                      asChild
+                      className="flex justify-between items-center"
+                    >
+                      <Link
+                        to="/dashboard"
+                        className="flex w-full items-center"
+                      >
+                        <span className="flex items-center">
+                          <LayoutDashboard className="mr-2" />
+                          Dashboard
+                        </span>
+                        <ChevronDown className="ml-auto opacity-50" size={16} />
+                      </Link>
+                    </SidebarMenuButton>
+                  </SidebarMenuItem>
+                )}
+
                 <SidebarMenuItem>
                   <SidebarMenuButton
-                    asChild
-                    className="flex justify-between items-center"
+                    onClick={() => setProductOpen((prev) => !prev)}
+                    className="flex justify-between items-center w-full"
                   >
-                    <Link to="/dashboard" className="flex w-full items-center">
-                      <span className="flex items-center">
-                        <LayoutDashboard className="mr-2" />
-                        Dashboard
-                      </span>
-                      <ChevronDown className="ml-auto opacity-50" size={16} />
-                    </Link>
+                    <span className="flex items-center">
+                      <Package className="mr-2" />
+                      Store
+                    </span>
+                    {productOpen ? (
+                      <ChevronUp className="opacity-50" size={16} />
+                    ) : (
+                      <ChevronDown className="opacity-50" size={16} />
+                    )}
                   </SidebarMenuButton>
-                </SidebarMenuItem>
-              )}
 
-              <SidebarMenuItem>
-                <SidebarMenuButton
-                  onClick={() => setProductOpen((prev) => !prev)}
-                  className="flex justify-between items-center w-full"
-                >
-                  <span className="flex items-center">
-                    <Package className="mr-2" />
-                    Store
-                  </span>
-                  {productOpen ? (
-                    <ChevronUp className="opacity-50" size={16} />
-                  ) : (
-                    <ChevronDown className="opacity-50" size={16} />
+                  {productOpen && (
+                    <SidebarMenuSub>
+                      <SidebarMenuSubItem>
+                        <SidebarMenuSubButton asChild>
+                          <Link to="/products/all">Products</Link>
+                        </SidebarMenuSubButton>
+                      </SidebarMenuSubItem>
+                      <SidebarMenuSubItem>
+                        <SidebarMenuSubButton asChild>
+                          <Link to="/products/add">Add Product</Link>
+                        </SidebarMenuSubButton>
+                      </SidebarMenuSubItem>
+                    </SidebarMenuSub>
                   )}
-                </SidebarMenuButton>
+                </SidebarMenuItem>
+              </SidebarMenu>
+            </SidebarContent>
+          </Sidebar>
 
-                {productOpen && (
-                  <SidebarMenuSub>
-                    <SidebarMenuSubItem>
-                      <SidebarMenuSubButton asChild>
-                        <Link to="/products/all">Products</Link>
-                      </SidebarMenuSubButton>
-                    </SidebarMenuSubItem>
-                    <SidebarMenuSubItem>
-                      <SidebarMenuSubButton asChild>
-                        <Link to="/products/add">Add Product</Link>
-                      </SidebarMenuSubButton>
-                    </SidebarMenuSubItem>
-                  </SidebarMenuSub>
-                )}
-              </SidebarMenuItem>
-            </SidebarMenu>
-          </SidebarContent>
-        </Sidebar>
+          <div className="flex flex-col flex-1 overflow-hidden">
+            <Header
+              showSearch={window.location.pathname.includes("products/all")}
+            />
 
-        <div className="flex flex-col flex-1 overflow-hidden">
-          <Header
-            showSearch={window.location.pathname.includes("products/all")}
-          />
-
-          <main className="flex-1 overflow-auto p-6">
-            <RootRouter />
-          </main>
+            <main className="flex-1 overflow-auto p-6">
+              <RootRouter />
+            </main>
+          </div>
         </div>
-      </div>
-    </SidebarProvider>
+      </SidebarProvider>
+      <Footer />
+    </>
   );
 };

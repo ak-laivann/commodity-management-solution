@@ -5,3 +5,4 @@ export * from "./ProductTable";
 export * from "./Pagination";
 export * from "./MetricCharts";
 export * from "./dashboard";
+export * from "./Footer";

@@ -81,7 +81,7 @@ export const RevenueBarChartMinimal = ({
 };
 
 type WeeklyRevenueChartProps = {
-  data: { [day: string]: number }; // Example: { Mon: 1200, Tue: 1500, Wed: 800, ... }
+  data: { [day: string]: number };
 };
 
 export const WeeklyRevenueBarChart = ({
