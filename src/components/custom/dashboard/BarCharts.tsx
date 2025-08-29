@@ -1,4 +1,3 @@
-import { ChartContainer } from "@/components/ui/chart";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { ArrowUp, TrendingUp } from "lucide-react";
 import {
@@ -8,10 +7,6 @@ import {
   YAxis,
   Tooltip,
   ResponsiveContainer,
-  CartesianGrid,
-  Line,
-  LineChart,
-  Legend,
 } from "recharts";
 
 type RevenueChartProps = {
@@ -40,7 +35,11 @@ export const RevenueBarChart = ({ data }: RevenueChartProps) => {
                 "Revenue",
               ]}
             />
-            <Bar dataKey="revenue" fill="#4095FF" radius={[6, 6, 0, 0]} />
+            <Bar
+              dataKey="revenue"
+              fill="var(--chart-3)"
+              radius={[6, 6, 0, 0]}
+            />
           </BarChart>
         </ResponsiveContainer>
       </CardContent>
@@ -72,7 +71,11 @@ export const RevenueBarChartMinimal = ({
             data={chartData}
             margin={{ top: 20, right: 0, left: 0, bottom: 0 }}
           >
-            <Bar dataKey="revenue" fill="#4095FF" radius={[6, 6, 0, 0]} />
+            <Bar
+              dataKey="revenue"
+              fill="var(--chart-4)"
+              radius={[6, 6, 0, 0]}
+            />
           </BarChart>
         </ResponsiveContainer>
       </CardContent>
@@ -113,7 +116,11 @@ export const WeeklyRevenueBarChart = ({
                 "Revenue",
               ]}
             />
-            <Bar dataKey="revenue" fill="#34D399" radius={[6, 6, 0, 0]} />
+            <Bar
+              dataKey="revenue"
+              fill="var(--chart-5)"
+              radius={[6, 6, 0, 0]}
+            />
           </BarChart>
         </ResponsiveContainer>
       </CardContent>
@@ -153,7 +160,11 @@ export const SubscriptionBarChart = ({ data }: SubscriptionChartProps) => {
             data={chartData}
             margin={{ top: 20, right: 0, left: 0, bottom: 0 }}
           >
-            <Bar dataKey="subscriptions" fill="#4095FF" radius={[6, 6, 0, 0]} />
+            <Bar
+              dataKey="subscriptions"
+              fill="var(--chart-6)"
+              radius={[6, 6, 0, 0]}
+            />
           </BarChart>
         </ResponsiveContainer>
       </CardContent>

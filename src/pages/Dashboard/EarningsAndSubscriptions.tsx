@@ -82,8 +82,8 @@ export const EarningsAndSubscriptions = () => {
           </div>
           <div className="col-span-4">
             <ComparisonLineChart
-              color1="red"
-              color2="blue"
+              color1="#FFA800"
+              color2=""
               data2={{}}
               data1={asd?.subscriptions!}
               title="Subscriptions"

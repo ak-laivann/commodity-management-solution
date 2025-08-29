@@ -57,8 +57,8 @@ export const MetricsComparisonPage = () => {
       <AsyncUIWrapper isLoading={isLoading} isError={isError} error={error}>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
           <ComparisonLineChart
-            color1="red"
-            color2="blue"
+            color1="#25BC5B"
+            color2="#565656"
             title="Total Earning"
             data1={data?.revenue?.year1}
             data2={data?.revenue?.year2}
@@ -67,8 +67,8 @@ export const MetricsComparisonPage = () => {
             year2Label={year2}
           />
           <ComparisonLineChart
-            color1="red"
-            color2="blue"
+            color1="#994AFF"
+            color2="#565656"
             title="Total Sales"
             data1={data?.sales?.year1}
             data2={data?.sales?.year2}
@@ -77,8 +77,8 @@ export const MetricsComparisonPage = () => {
             year2Label={year2}
           />
           <ComparisonLineChart
-            color1="red"
-            color2="blue"
+            color1="#FEA700"
+            color2="#565656"
             title="Total Views"
             data1={data?.views?.year1}
             data2={data?.views?.year2}
